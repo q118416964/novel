@@ -10,7 +10,7 @@ if (process.env.NODE_ENV == 'development') {
   service.defaults.baseURL = '';} 
 else {    
   service.defaults.baseURL = 'http://api.zhuishushenqi.com';
-} 
+}
 
 // request interceptor
 service.interceptors.request.use(
@@ -19,7 +19,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    // do something with request error
+    // do something with request errors
     console.log(error) // for debug
     return Promise.reject(error)
   }

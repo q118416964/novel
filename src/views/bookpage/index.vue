@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <div class="top">
-      <goback :title="title" @goback="back" @getmenu="getcata"></goback>
+      <goback :title="bookname" @goback="back" @getmenu="getcata"></goback>
     </div>
 
     <div class="mini"></div>
