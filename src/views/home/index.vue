@@ -191,6 +191,7 @@ export default {
   },
   computed: {},
   created() {
+    console.log(history,'hishsishishishishsihsihsihs')
     console.log(this.$store.state,'state')
      window.scroll(0, 0);
     this.getMaleSix();

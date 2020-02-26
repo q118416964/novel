@@ -167,7 +167,11 @@ export default {
         this.getbook()
     },
     destroyed(){
-         this.$toast.clear()
+        //  this.$toast.clear()
+    },
+    beforeRouteLeave(to,from,next) {
+        this.$toast.clear()
+        next()
     },
     mounted() {
 
@@ -212,7 +216,8 @@ export default {
             name:this.info.title,
             url:this.catelog[0].url,
             bookurl: this.nexturl,
-            cover:this.info.cover
+            cover:this.info.cover,
+            top:0,
             }
             // console.log(obj,'oooobbbjj')
             // this.$store.commit('addbookshelf',obj)
@@ -232,10 +237,6 @@ export default {
             var index1 = list.findIndex(ele=> ele.bookurl == this.nexturl)
             list.splice(index1,1)
             localStorage.setItem('bookshelf',JSON.stringify(list))
-            // this.$store.commit('delelabookshelf',this.nexturl)
-            // console.log(this.$store.state.bookshelf)
-            // var books = this.$store.state.bookshelf
-            // localStorage.setItem('bookshelf',JSON.stringify(books))
             this.before = '加入书架'
         }
         
@@ -254,10 +255,16 @@ export default {
             this.info = res.data
             var yesorno = JSON.parse(localStorage.getItem('bookshelf'))
             if(yesorno) {
-                console.log(this.nexturl,'next',yesorno)
+                console.log(yesorno,'yesorno')
                 var flag = yesorno.some(ele=>ele.name == this.info.title)
                 if(flag) {
                     this.before = '移除书架'
+                    console.log(this.info,'this.info')
+                    var obj = yesorno.find(ele=>ele.name == this.info.title)
+                    obj.cover = baseurl.staticPath + this.info.cover
+                    console.log(obj.cover,'cover',this.info.cover)
+                    localStorage.setItem('bookshelf',JSON.stringify(yesorno))
+                    console.log('111')
                 }else {
                     this.before = '加入书架'
                 }

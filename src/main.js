@@ -30,6 +30,9 @@ import { Popup } from 'vant';
 
 Vue.use(Popup);
 
+import Mui from 'vue-awesome-mui';
+Vue.use(Mui);
+
 new Vue({
   router,
   store,

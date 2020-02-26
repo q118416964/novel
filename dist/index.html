@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><meta name=referrer content=never><link rel=icon href=favicon.ico><title>novel</title><link href=css/about.1c330962.css rel=prefetch><link href=js/about.4a9270f0.js rel=prefetch><link href=css/app.f82b4284.css rel=preload as=style><link href=css/chunk-vendors.aae838a3.css rel=preload as=style><link href=js/app.c57bb35d.js rel=preload as=script><link href=js/chunk-vendors.9631b27b.js rel=preload as=script><link href=css/chunk-vendors.aae838a3.css rel=stylesheet><link href=css/app.f82b4284.css rel=stylesheet></head><body><noscript><strong>We're sorry but novel doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script>mui.init({
+        keyEventBind: {
+          backbutton: true, //关闭back按键监听
+        }
+      })
+      //首页返回键处理
+      // 处理逻辑： 1s内，连续两次按返回键，则退出应用；
+      var first = null;
+      mui.back = function(){
+        // 首次按键， 提示 再按一次退出应用
+        if(!first){
+          first = new Date().getTime();//记录第一次按下回退键的时间
+          mui.toast("再按一次退出应用");
+          history.go(-1); // 回退到上一页
+          setTimeout(function(){
+            //1s 后清除
+            first = null;
+          }, 1000);
+    
+        }else{
+          if(new Date().getTime() - first < 1000){
+            //如果两次按下的时间小于1s
+            plus.runtime.quit(); //那么就退出app
+          }
+        }
+      }</script><script src=js/chunk-vendors.9631b27b.js></script><script src=js/app.c57bb35d.js></script></body></html>

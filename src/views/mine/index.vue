@@ -17,7 +17,7 @@
                 name:item.bookurl
             }
         })">
-                <img :src="item.cover" :onerror="setErrorImg" alt="">
+                <img :src="item.cover" alt="">
                 <div>{{item.name}}</div>
             </div>
             <div class="item item1" ></div>
@@ -33,12 +33,11 @@ export default {
     props: {
 
     },
-    data() {
+    data() {img
         return {
             img,
             flag:true,
             list:[],
-            setErrorImg:'this.src="https://lh3.googleusercontent.com/proxy/BWfp4FgTATBSJcM-y4cTuYRMhnruc1wZw-uME0-K2wu4pJLLNsh-A25dMeNiq8fUl62SzF7INBOFWAmSfikfNUw_YZxfh5xB-AkTpsPaaQwoG6MJgKIUKd0"'
         };
     },
     computed: {

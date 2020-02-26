@@ -10,7 +10,7 @@
             </div>
             <div class="right">
                  <div class="icon " :style="{backgroundImage: 'url(' + pics + ')' }"></div>
-                 <div class="text">书架</div>
+                 <div class="text" @click="$router.push('/mine')">书架</div>
             </div>
         </div>
     </div>

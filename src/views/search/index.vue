@@ -32,7 +32,11 @@
             <span class="span1"></span>热搜作品
           </div>
         </h3>
-        <div class="item" v-for="(item,index) in search" :key="index">
+        <div class="item" v-for="(item,index) in search" :key="index" @click="$router.push({
+        path:'/novel/novellist/novelinfo',query:{
+          id:item._id
+        }
+      })">
           <div class="com">
             <div
               :class="[index == 0?'red':'',index == 1?'orange':'',index == 2?'blue':'','num']"

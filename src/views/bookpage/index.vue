@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <div class="top">
-      <goback :title="bookname" @goback="back" @getmenu="getcata"></goback>
+      <goback :title="bookname" @goback="back1" @getmenu="getcata" v-if="show1"></goback>
     </div>
 
     <div class="mini"></div>
@@ -15,7 +15,6 @@
         <p class="content1 bottom" @click="change" v-if="flag">点击观看下一章节</p>
         <p class="content1 bottom" v-if="flag1">已加载到最新章节</p>
         </div>
-
             <van-popup
   v-model="show"
   position="left"
@@ -27,14 +26,12 @@
         <h3>目录</h3>
     </div>
     <div class="content2">
-     <div class="item" v-for="(item,index) in catelog" :key="index" @click="changeto(item.url)">
+     <div class="item" v-for="(item,index) in catelog" :key="index" :class="[index == numb?'act':'']" @click="changeto(item.url)">
             {{index}}.{{item.num}}
         </div>
 </div>
 </div>
 </van-popup>
-
-             
     </div>
 </template>
 
@@ -63,51 +60,27 @@ export default {
             bookname:'',
             locks:true,
             left1:100,
-            cover:''
-           
+            cover:'',
+            top:0,
+            show1:false,
         };
     },
     computed: {
 
     },
-    beforeDestroy(){
-        // this.back()
-    },
-    created() {
-       
-        console.log(this.$route.query.url)
-        this.url = this.$route.query.url
-        console.log(this.$route.query.name, 'nananan')
-        this.name1 = this.$route.query.name
-        this.init()
-    },
-    mounted() {
-
-    },
-    updated() {
-        //  window.scroll(0, 0);
-    },
-    watch: {
-
-    },
-    methods: {
-        change(){
-            this.title = this.nexttitle
-            this.content = this.nextcontent
-            this.numb = this.numb +1
-            this.nextchange()
-             window.scroll(0, 0);
-        },
-         back() {
-             var yesorno = JSON.parse(localStorage.getItem('bookshelf'))
+    beforeRouteLeave:function(to, from, next) {
+          var yesorno = JSON.parse(localStorage.getItem('bookshelf'))
+          console.log(this.sct(),'toptotptpo')
+          var top = this.sct()
+            console.log('toptopttppto')
              if(yesorno) {
                  var flag = yesorno.some(ele=>ele.bookurl == this.name1)
                  if(flag) {
                     var obj = yesorno.find(ele=>ele.bookurl == this.name1)
                     obj.url = this.catelog[this.numb].url
+                    obj.top = top
                     localStorage.setItem('bookshelf',JSON.stringify(yesorno))
-                    this.$router.go(-1);
-
+                    next()
                 }else {
                     Dialog.confirm({
                     title: '追书提示',
@@ -118,19 +91,17 @@ export default {
                             name:this.bookname,
                             url:this.catelog[this.numb].url,
                             bookurl:this.name1,
-                            cover:this.cover
+                            cover:this.cover,
+                            top:top
                         }
-                        // console.log(obj,'this.obj')
-                        // this.$store.commit('addbookshelf',obj)
-                        // var bookshelf = this.$store.state.bookshelf
+                        console.log(this.sct(),'toptotptpo')
                         var list = JSON.parse(localStorage.getItem('bookshelf'))
                         list.push(obj)
                         localStorage.setItem('bookshelf',JSON.stringify(list))
-                        // console.log(this.$store.state)
-                        this.$router.go(-1);
+                        next()
                     }).catch(() => {
                     // on cancel
-                    this.$router.go(-1);
+                    next()
                     });
                 }
                 }else {
@@ -143,67 +114,125 @@ export default {
                             name:this.bookname,
                             url:this.catelog[this.numb].url,
                             bookurl:this.name1,
-                            cover:this.cover
+                            cover:this.cover,
+                            top:top
                         }
-                        // console.log(obj,'this.obj')
-                        // this.$store.commit('addbookshelf',obj)
-                        // var bookshelf = this.$store.state.bookshelf
                         var item = []
                         item.push(obj)
+                        console.log(this.sct(),'toptotptpo')
                         localStorage.setItem('bookshelf',JSON.stringify(item))
                         console.log(this.$store.state)
-                        this.$router.go(-1);
+                         next()
                     }).catch(() => {
                     // on cancel
-                    this.$router.go(-1);
+                    next()
                     });
 
-                }       
+                }       	
     },
-    getcata() {
-        this.show = true
-        // if(this.left1 == 100) {
-        //     this.left1 =0
-        // }else {
-        //     this.left1 = 100
-        // }
+    beforeDestroy(){
+          
+    },
+    created() {
+        this.url = this.$route.query.url
+        this.name1 = this.$route.query.name
+        
+        this.init()
 
     },
+    mounted() {
+        
+    },
+    updated() {
+    },
+    watch: {
+        
+    },
+    methods: {
+        change(){
+            this.title = this.nexttitle
+            this.content = this.nextcontent
+            this.numb = this.numb +1
+            this.nextchange()
+            this.top = 0
+            this.$nextTick(()=>{
+                 window.scroll(0, 0)
+            })
+        },
+        back1() {
+            this.$router.go(-1)
+        },
+        getcata() {
+            this.show = true
+            setTimeout(()=>{
+                var act = document.querySelector('.act')
+                console.log(act.offsetTop,)
+                var content2 =  document.querySelector('.content2')
+                console.log(content2.scrollHeight,content2.scrollTop)
+                content2.scrollTop=act.offsetTop - 97
+            })
+        },
         changeto(val) {
-             this.show= false
+            this.show= false
             this.url = val
             this.init()
-           
-           
+        },
+        test() {
+              console.log(this.sct(),'toptotptpo')
         },
         init() {
             this.$toast({
-            duration: 0, 
-            type:'loading',
-            message: '加载中...',
-            forbidClick: true,
+                duration: 0, 
+                type:'loading',
+                message: '加载中...',
+                forbidClick: true,
             });
-        axios.get('http://api.pingcc.cn/?xsurl2='+this.url+'').then(res=>{
+            axios.get('http://api.pingcc.cn/?xsurl2='+this.url+'').then(res=>{
             this.title =res.data.num
             this.content = res.data.content
             
             this.flag = true
-            window.scroll(0, 0);
+            this.show1 = true
+            var yesorno = JSON.parse(localStorage.getItem('bookshelf'))
+            if(yesorno) {
+                var obj = yesorno.find(ele=>ele.url == this.url)
+                console.log(obj,'bobbjbjbjjbjb')
+                if(obj) {
+                    console.log(this.url)
+                    console.log(obj.top)
+                    this.top = obj.top
+                    this.$nextTick(()=>{
+                        window.scroll(0, this.top)
+                        this.top = 0
+                    })
+                }else {
+                    this.top =0
+                    this.$nextTick(()=>{
+                        window.scroll(0, 0)
+                    })
+                }
+                
+            }else {
+                this.top =0
+                this.$nextTick(()=>{
+                        window.scroll(0, 0)
+                })
+            }
             this.getnext()
+            this.$toast.clear()
         })
+        },
+        sct() {
+            return document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
         },
         getnext() {
              axios.get('http://api.pingcc.cn/?xsurl1='+this.$route.query.name+'').then(res=>{
             this.catelog = res.data.list
-            console.log(res.data.data.name)
             this.bookname = res.data.data.name
             this.cover = res.data.data.cover
-            console.log(this.cover,'thiscover')
             this.$store.commit('addread',res.data.list)
-            console.log(this.$store.state,'ssss')
-            console.log(res.data)
             this.numb = res.data.list.findIndex(item=>this.url == item.url)
-            console.log(this.numb,'numb')
+            // console.log(this.numb,'numb')
             if(this.numb == res.data.list.length - 1) {
                 this.flag1 = true
                 this.flag = false
@@ -211,17 +240,16 @@ export default {
                 axios.get('http://api.pingcc.cn/?xsurl2='+this.catelog[this.numb+1].url+'').then(res=>{
                 this.nexttitle =res.data.num
                 this.nextcontent = res.data.content
-                console.log(this.nextcontent,'hhhh')
+                // console.log(this.nextcontent,'hhhh')
             })
             }
-        })
-        this.$toast.clear()
+           })
+      
         },
         nextchange() {
             axios.get('http://api.pingcc.cn/?xsurl2='+this.catelog[this.numb+1].url+'').then(res=>{
             this.nexttitle =res.data.num
             this.nextcontent = res.data.content
-
         })
         }
     },
@@ -243,13 +271,11 @@ export default {
 }
 .mini {
   width: 100%;
-  // background-color: pink;
-  // margin-top:50px;
   padding-top: 44px;
 }
 .fat {
-        background-color: #C4B395;
-        overflow: hidden;
+    background-color: #C4B395;
+    overflow: hidden;
     }
 .title {
     font-weight: bold;
@@ -293,9 +319,6 @@ export default {
 .innerbox {
     width: 100%;
     height: 100%;
-
-   
-
     .top {
         width: 100%;
         height: 100px;
@@ -313,8 +336,8 @@ export default {
         height:100%;
         padding-top:102px;
         box-sizing: border-box;
-        // background-color: blue;
         overflow:auto;
+        //  position:relative;
         .item {
             height:40px;
             line-height:40px;
@@ -323,22 +346,13 @@ export default {
             border-bottom:1px dashed #dfdfdf;
             background-color: #fafafa;
             font-size:13px;
+            
+        }
+        .act {
+            top:0;
+            color:#ff4644;
         }
     }
 
 }
-// .testbox2 {
-//     width: 300px;
-//     background-color: #fff;
-//     height:300px;
-//     position:fixed;
-//     top:0;
-//     left:0;
-// }
-// .testbox {
-//     width: 200px;
-//     height: 200px;
-//     background-color: pink;
-    
-// }
 </style>
